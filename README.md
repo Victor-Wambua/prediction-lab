@@ -29,6 +29,12 @@ controls. You log in yourself in the opened browser, and no credentials are stor
 >   please seek help from a local support service.
 > - Not affiliated with, endorsed by or connected to Betika, Spribe or any game
 >   operator. All trademarks belong to their owners.
+> - **No real data is included.** This repository contains no collected rounds,
+>   predictions, results, databases or account information. Every multiplier in the
+>   code, tests and documentation is dummy data: hand-written test values or numbers
+>   generated at random by the built-in simulator. Any resemblance to real results
+>   from any betting website or game is purely coincidental. Data you collect
+>   yourself stays in your local `data/` folder, which is excluded from git.
 > - Provided "as is", without warranty of any kind. You use it at your own risk
 >   and are solely responsible for how you use it.
 
