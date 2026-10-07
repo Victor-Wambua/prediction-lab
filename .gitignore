@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+data/*.db
+data/*.db-*
+reports/*
+!reports/.gitkeep
+playwright/.auth/
+.env
+data/*.lock
+data/archive/
