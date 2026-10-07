@@ -69,6 +69,7 @@ def tier_panel(conn):
 
 
 GREEN, RED = "#1a7f37", "#cf222e"
+TARGET_WARMUP = 200  # rounds of history before a target prediction counts toward "beating chance"
 
 
 def target_panel(conn):
@@ -92,8 +93,10 @@ def target_panel(conn):
                    f"after {pend['after_x']:.2f}x, awaiting result.")
 
     hist = pd.read_sql_query(
-        "SELECT target, actual_multiplier, hit FROM target_predictions"
-        " WHERE status='resolved' AND level=? ORDER BY id", conn, params=(level,))
+        "SELECT p.target, p.actual_multiplier, p.hit,"
+        " (SELECT COUNT(*) FROM rounds r2 WHERE r2.id <= p.base_round_pk) AS n_history"
+        " FROM target_predictions p WHERE p.status='resolved' AND p.level=? ORDER BY p.id",
+        conn, params=(level,))
     if hist.empty:
         return
     last = hist.tail(40)
@@ -106,17 +109,26 @@ def target_panel(conn):
     st.caption(f"Last {len(last)} outcomes, oldest → newest. Green = reached the predicted "
                "multiplier, red = crashed below it. Hover for the prediction.")
 
-    n, hits = len(hist), int(hist.hit.sum())
-    test = stats_binom(hits, n, level)
+    # Targets computed from a short history are noisy (e.g. a 10% target from 25
+    # rounds), which inflates or deflates hit rates. Judge only after warm-up, and
+    # correct for checking several levels at once.
+    scored = hist[hist.n_history >= TARGET_WARMUP]
+    n, hits = len(scored), int(scored.hit.sum())
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Correct overall", f"{hits / n:.1%}", help=f"{hits} of {n} rounds")
+    c1.metric("Correct overall", f"{hist.hit.mean():.1%}", help=f"{int(hist.hit.sum())} of {len(hist)} rounds")
     c2.metric("Correct, last 50", f"{hist.hit.tail(50).mean():.1%}")
     c3.metric("Expected by chance", f"{level:.0%}")
-    c4.metric("Beating chance?", "Yes, investigate" if test < 0.05 else "No",
-              help=f"One-sided binomial test p = {test:.3f} (n = {n}). Needs hundreds of rounds to mean much.")
+    if n < 100:
+        c4.metric("Beating chance?", "Too early",
+                  help=f"Judged on predictions made with ≥{TARGET_WARMUP} rounds of history; have {n}.")
+    else:
+        p_adj = min(1.0, stats_binom(hits, n, level) * len(targets.LEVELS))
+        c4.metric("Beating chance?", "Yes, investigate" if p_adj < 0.05 else "No",
+                  help=f"After warm-up: {hits}/{n} = {hits / n:.1%}. One-sided binomial p, "
+                       f"Bonferroni-corrected for {len(targets.LEVELS)} levels = {p_adj:.3f}.")
     cum = pd.DataFrame({"% correct so far": hist.hit.expanding().mean() * 100,
                         "expected by chance": level * 100})
-    cum.index = np.arange(1, n + 1)
+    cum.index = np.arange(1, len(hist) + 1)
     st.line_chart(cum, height=200)
 
 

@@ -79,7 +79,7 @@ class LivePredictor:
                 " WHERE run_id=0 AND status='resolved' AND model_name='global_freq'").fetchone()
             if row["n"]:
                 print(f"  live global_freq: n={row['n']} acc={row['acc']:.1%} logloss={row['ll']:.3f}")
-        name = "logreg_all" if "logreg_all" in preds else "global_freq"
+        name = "global_freq"  # the reference; logreg_all is noisy and overfits
         if name in preds:
             dist = "  ".join(f"{l}={p:.0%}" for l, p in zip(LABELS, preds[name]))
             print(f"  next ({name}): {dist}  [estimated probabilities, not certainty]")
