@@ -48,11 +48,84 @@ python3.12 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 playwright install chromium
-cp .env.example .env        # optional settings, no secrets
+cp .env.example .env        # then set PREDICTION_LAB_URL (see "Running it")
 pytest -q                   # ~40 tests, ~20s
 ```
 
-## Workflow
+## Running it
+
+You need **two terminal windows**: one for the collector, one for the dashboard.
+Both run until you stop them.
+
+### 1. Configure (first time only)
+
+Edit `.env` and set the page to observe. Only use a site whose terms allow it
+(see the disclaimer above):
+
+```bash
+PREDICTION_LAB_URL=https://the-game-page-you-want-to-observe
+```
+
+Optionally run `python -m prediction_lab probe` once. Log in and open the game in
+the browser it opens, then press Enter in the terminal. It prints where it found
+the round-history strip and a selector you can pin as
+`PREDICTION_LAB_HISTORY_ITEM_SELECTOR` in `.env`. Check that the first item it
+lists is the most recent round. Type `q` to quit.
+
+### 2. Start the collector (terminal 1)
+
+```bash
+cd prediction-lab
+source .venv/bin/activate
+./run.sh
+```
+
+A Chromium window opens. **Log in and open the game yourself**; the collector
+never does this for you. Within a few seconds the terminal shows:
+
+```
+[strip] reading from {"frame": "https://…/", "selector": "…"}
+[segment 1] first run; bootstrapped 25 rounds from the strip
+  next round reaches at least 1.94x  (50% level)
+round: 1.37x
+  live global_freq: n=1 acc=… logloss=…
+```
+
+Keep the Chromium window open with the game visible; closing it stops collection.
+Stop with **Ctrl-C**. Restarting later carries on where you left off, as long as
+the history strip still overlaps what was stored. Otherwise a new segment starts,
+with no duplicates. Only one collector can run at a time.
+
+### 3. Start the dashboard (terminal 2)
+
+```bash
+cd prediction-lab
+source .venv/bin/activate
+python -m prediction_lab dashboard
+```
+
+Open **http://localhost:8501**. It refreshes itself every few seconds while the
+collector runs. Stop it with **Ctrl-C**. If it says "Source file changed", click
+**Rerun**.
+
+### 4. Check the results (any time)
+
+```bash
+python -m prediction_lab report     # data quality, distribution, independence tests
+python -m prediction_lab evaluate   # walk-forward backtest of all models (after a few hundred rounds)
+```
+
+### Troubleshooting
+
+| You see | Do this |
+|---|---|
+| `[waiting] no history strip visible yet` | Log in and open the game itself, not just the site's landing page. If it persists, run `probe`. |
+| `strip found but an item failed to parse` | The page layout changed. Re-run `probe` and update the selector in `.env`. |
+| `Another collector is already running` | Stop the other one with Ctrl-C in its terminal. |
+| Dashboard says "Waiting for the collector…" | The collector isn't running, or no round has ended since it started. |
+| Segment count keeps rising | The collector was stopped long enough for the strip to move past stored rounds. That's harmless, but keep it running for cleaner data. |
+
+## Command reference
 
 | Step | Command | What it does |
 |---|---|---|
