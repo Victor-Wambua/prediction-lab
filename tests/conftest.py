@@ -1,6 +1,6 @@
 import pytest
 
-from aviator_lab import database as db
+from prediction_lab import database as db
 
 
 @pytest.fixture

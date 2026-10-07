@@ -1,8 +1,8 @@
-# Aviator Research Lab
+# Prediction Lab
 
 A research experiment that asks one question:
 
-> After observing 10,000+ Aviator rounds, does any model predict the next round's
+> After observing 10,000+ crash-game rounds, does any model predict the next round's
 > class better than a properly constructed baseline, on data it has never seen?
 
 "No" is a successful result. The lab is built so that it can prove us wrong in
@@ -27,8 +27,8 @@ controls. You log in yourself in the opened browser, and no credentials are stor
 >   statistics) should be used to decide whether, when or how much to bet.
 >   Gambling involves the risk of losing money. If gambling is causing you harm,
 >   please seek help from a local support service.
-> - Not affiliated with, endorsed by or connected to Betika, Spribe or any game
->   operator. All trademarks belong to their owners.
+> - Not affiliated with, endorsed by or connected to any betting website, game
+>   provider or operator. All trademarks belong to their owners.
 > - **No real data is included.** This repository contains no collected rounds,
 >   predictions, results, databases or account information. Every multiplier in the
 >   code, tests and documentation is dummy data: hand-written test values or numbers
@@ -56,23 +56,23 @@ pytest -q                   # ~40 tests, ~20s
 
 | Step | Command | What it does |
 |---|---|---|
-| 0 | `python -m aviator_lab simulate` | Runs the whole pipeline on synthetic data. Must PASS before trusting real results. |
-| 1 | `python -m aviator_lab probe` | Opens the site. Log in, open the game, press Enter. It prints where it found the history strip and a suggested selector. |
-| 2 | `python -m aviator_lab collect` (or `./run.sh`) | Records rounds and logs a live prediction for every next round. Ctrl-C to stop. |
-| 3 | `python -m aviator_lab report` | Data-quality checks, distribution vs the RTP model, independence tests, live scores. |
-| 4 | `python -m aviator_lab evaluate` | Walk-forward backtest of all models, with significance tests. Results are saved to the DB. |
-| 5 | `python -m aviator_lab dashboard` | Streamlit dashboard at http://localhost:8501. |
+| 0 | `python -m prediction_lab simulate` | Runs the whole pipeline on synthetic data. Must PASS before trusting real results. |
+| 1 | `python -m prediction_lab probe` | Opens the site. Log in, open the game, press Enter. It prints where it found the history strip and a suggested selector. |
+| 2 | `python -m prediction_lab collect` (or `./run.sh`) | Records rounds and logs a live prediction for every next round. Ctrl-C to stop. |
+| 3 | `python -m prediction_lab report` | Data-quality checks, distribution vs the RTP model, independence tests, live scores. |
+| 4 | `python -m prediction_lab evaluate` | Walk-forward backtest of all models, with significance tests. Results are saved to the DB. |
+| 5 | `python -m prediction_lab dashboard` | Streamlit dashboard at http://localhost:8501. |
 
 Useful options:
 
 ```bash
-python -m aviator_lab collect --selector "<selector printed by probe>"  # pin the strip selector
-python -m aviator_lab collect --order oldest_first        # if probe shows the oldest round first
-python -m aviator_lab evaluate --window 500               # rolling window instead of expanding
-python -m aviator_lab evaluate --retrain-every 100
-python -m aviator_lab evaluate --data synthetic-null --n 10000 --seed 3
-python -m aviator_lab evaluate --final                    # final holdout: rarely, and never tune afterwards
-python -m aviator_lab verify-round --server-seed S --client-seed A --client-seed B --client-seed C --multiplier 2.41 --hash H
+python -m prediction_lab collect --selector "<selector printed by probe>"  # pin the strip selector
+python -m prediction_lab collect --order oldest_first        # if probe shows the oldest round first
+python -m prediction_lab evaluate --window 500               # rolling window instead of expanding
+python -m prediction_lab evaluate --retrain-every 100
+python -m prediction_lab evaluate --data synthetic-null --n 10000 --seed 3
+python -m prediction_lab evaluate --final                    # final holdout: rarely, and never tune afterwards
+python -m prediction_lab verify-round --server-seed S --client-seed A --client-seed B --client-seed C --multiplier 2.41 --hash H
 ```
 
 Run **one** collector at a time. A second one refuses to start, because two
@@ -153,7 +153,7 @@ Accuracy is shown but is a weak metric. Under the RTP-97 model, always predictin
 ## Layout
 
 ```
-aviator_lab/
+prediction_lab/
   config.py       settings (.env)            classes.py    class edges + theoretical probs
   history.py      strip parsing + alignment   collector.py  Playwright observer, probe
   database.py     SQLite schema + access      live.py       live predict/resolve loop
@@ -174,7 +174,7 @@ DB tables: `segments`, `rounds`, `predictions` (live `run_id=0`, backtests
 ## Provably fair module
 
 `fairness.py` only uses what the game's own "Provably fair" dialog shows for a
-finished round. Spribe's exact derivation isn't assumed. Several candidate formulas
+finished round. The game provider's exact derivation isn't assumed. Several candidate formulas
 are tested, and `verify-round` reports which one, if any, reproduces the displayed
 multiplier. Record several rounds and see which hypothesis survives all of them.
 Verifying a round proves the result came from those seeds. It does not make the

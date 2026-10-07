@@ -1,4 +1,4 @@
-from aviator_lab import fairness
+from prediction_lab import fairness
 
 
 def test_verify_round_identifies_the_generating_hypothesis():

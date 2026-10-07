@@ -86,7 +86,7 @@ def acquire_single_instance_lock():
 
 
 class Collector:
-    def __init__(self, conn, source=config.AVIATOR_URL, live=None, order="newest_first"):
+    def __init__(self, conn, source=config.PREDICTION_LAB_URL, live=None, order="newest_first"):
         self.conn = conn
         self.source = source
         self.live = live
@@ -126,7 +126,7 @@ class Collector:
         return pks
 
 
-async def run(selector=config.HISTORY_ITEM_SELECTOR, url=config.AVIATOR_URL, live=True,
+async def run(selector=config.HISTORY_ITEM_SELECTOR, url=config.PREDICTION_LAB_URL, live=True,
               order="newest_first"):
     from playwright.async_api import async_playwright
     from .live import LivePredictor
@@ -139,7 +139,7 @@ async def run(selector=config.HISTORY_ITEM_SELECTOR, url=config.AVIATOR_URL, liv
         context = await browser.new_context(viewport={"width": 1400, "height": 900})
         page = await context.new_page()
         await page.goto(url, wait_until="domcontentloaded")
-        print("Aviator Research Lab collector: OBSERVE ONLY. Log in and open the game manually.")
+        print("Prediction Lab collector: OBSERVE ONLY. Log in and open the game manually.")
         print(f"Selector: {selector or 'auto-discover'} | DB: {config.DB_PATH}")
         prev, stable, last_ok, last_hint, announced = None, 0, time.time(), 0.0, None
         while True:
@@ -176,7 +176,7 @@ async def run(selector=config.HISTORY_ITEM_SELECTOR, url=config.AVIATOR_URL, liv
             await asyncio.sleep(config.POLL_SECONDS)
 
 
-async def probe(url=config.AVIATOR_URL):
+async def probe(url=config.PREDICTION_LAB_URL):
     """Open the page, wait for you to log in, then print what the collector would read."""
     from playwright.async_api import async_playwright
     async with async_playwright() as pw:
@@ -196,5 +196,5 @@ async def probe(url=config.AVIATOR_URL):
                     print(f"\nframe:     {safe_url(frame.url)}")
                     print(f"container: {found['container']}")
                     print(f"items ({len(found['texts'])}): {found['texts'][:15]}")
-                    print(f"suggested: AVIATOR_HISTORY_ITEM_SELECTOR={found['container']} > *")
+                    print(f"suggested: PREDICTION_LAB_HISTORY_ITEM_SELECTOR={found['container']} > *")
             print("\nCheck the order: is the FIRST item the most recent round? (default assumption)")

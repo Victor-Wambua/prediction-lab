@@ -1,7 +1,7 @@
 import numpy as np
 
-from aviator_lab import bigwins
-from aviator_lab.simulation import generate_random_rounds
+from prediction_lab import bigwins
+from prediction_lab.simulation import generate_random_rounds
 
 
 def test_rounds_since_and_gaps_respect_segments():

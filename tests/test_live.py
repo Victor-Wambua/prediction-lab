@@ -1,9 +1,9 @@
 import time
 
-from aviator_lab.collector import Collector
-from aviator_lab.live import LivePredictor
-from aviator_lab.report import quality_checks
-from aviator_lab.simulation import generate_random_rounds
+from prediction_lab.collector import Collector
+from prediction_lab.live import LivePredictor
+from prediction_lab.report import quality_checks
+from prediction_lab.simulation import generate_random_rounds
 
 
 def test_live_predictions_scored_on_next_round_and_voided_on_gap(conn):

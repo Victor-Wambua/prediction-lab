@@ -1,10 +1,10 @@
 import numpy as np
 
-from aviator_lab.classes import N_CLASSES, to_class
-from aviator_lab.evaluation import walk_forward
-from aviator_lab.metrics import per_row_brier, per_row_log_loss, summarize
-from aviator_lab.models import GlobalFrequency, Model, RecentWindow, Uniform
-from aviator_lab.simulation import generate_random_rounds
+from prediction_lab.classes import N_CLASSES, to_class
+from prediction_lab.evaluation import walk_forward
+from prediction_lab.metrics import per_row_brier, per_row_log_loss, summarize
+from prediction_lab.models import GlobalFrequency, Model, RecentWindow, Uniform
+from prediction_lab.simulation import generate_random_rounds
 
 
 class Spy(Model):

@@ -4,7 +4,7 @@ Only uses values the game itself shows a player in its "Provably fair" dialog
 for a FINISHED round (server seed revealed after the round, client seeds, the
 combined hash, the result). Nothing here tries to obtain hidden secrets.
 
-The exact derivation Spribe uses is NOT hard-coded as fact. Several candidate
+The exact derivation the game provider uses is NOT hard-coded as fact. Several candidate
 formulas are implemented as hypotheses; `verify_round` reports which of them,
 if any, reproduce the displayed multiplier. Record several real rounds and see
 which hypothesis survives all of them.

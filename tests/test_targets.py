@@ -2,10 +2,10 @@ import time
 
 import numpy as np
 
-from aviator_lab import targets
-from aviator_lab.collector import Collector
-from aviator_lab.live import LivePredictor
-from aviator_lab.simulation import generate_random_rounds
+from prediction_lab import targets
+from prediction_lab.collector import Collector
+from prediction_lab.live import LivePredictor
+from prediction_lab.simulation import generate_random_rounds
 
 
 def test_empirical_target_is_survival_quantile():

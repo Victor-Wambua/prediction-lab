@@ -45,7 +45,7 @@ def main():
         print("!! Some predictions were stamped after their target round: investigate before trusting live scores.")
     df = db.load_rounds(conn)
     if df.empty:
-        print("\nNo rounds yet. Run: python -m aviator_lab collect")
+        print("\nNo rounds yet. Run: python -m prediction_lab collect")
         return
     x, seg = df["multiplier"].to_numpy(), df["segment_id"].to_numpy()
     print(f"\n=== DISTRIBUTION (n={len(x)}) ===")

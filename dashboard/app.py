@@ -1,4 +1,4 @@
-"""Aviator Research Lab dashboard. Run: python -m aviator_lab dashboard"""
+"""Prediction Lab dashboard. Run: python -m prediction_lab dashboard"""
 import json
 import sys
 from pathlib import Path
@@ -8,13 +8,13 @@ import pandas as pd
 import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from aviator_lab import bigwins, database as db, stats, targets, tiers  # noqa: E402
-from aviator_lab.classes import LABELS, theoretical_probs  # noqa: E402
-from aviator_lab.metrics import calibration_table  # noqa: E402
-from aviator_lab.report import quality_checks  # noqa: E402
+from prediction_lab import bigwins, database as db, stats, targets, tiers  # noqa: E402
+from prediction_lab.classes import LABELS, theoretical_probs  # noqa: E402
+from prediction_lab.metrics import calibration_table  # noqa: E402
+from prediction_lab.report import quality_checks  # noqa: E402
 
-st.set_page_config(page_title="Aviator Research Lab", layout="wide")
-st.title("Aviator Research Lab")
+st.set_page_config(page_title="Prediction Lab", layout="wide")
+st.title("Prediction Lab")
 st.caption("Observe-only research. Probabilities are model estimates, not certainty. "
            "No result here is evidence of a winning strategy unless it beats the baseline "
            "on unseen data with statistical significance.")
@@ -163,7 +163,7 @@ def live_panel():
             "SELECT model_name, p0,p1,p2,p3,p4 FROM predictions WHERE run_id=0 AND status='pending'"
             " AND base_round_pk=(SELECT MAX(base_round_pk) FROM predictions WHERE run_id=0)", conn)
         if pend.empty:
-            st.info("No pending prediction. Start the collector: python -m aviator_lab collect")
+            st.info("No pending prediction. Start the collector: python -m prediction_lab collect")
         else:
             t = pend.set_index("model_name")[db.PROB_COLS]
             t.columns = LABELS
@@ -309,7 +309,7 @@ if len(rounds):
 st.header("Latest backtest (walk-forward)")
 runs = pd.read_sql_query("SELECT * FROM model_runs ORDER BY id DESC LIMIT 20", conn)
 if runs.empty:
-    st.write("No backtests yet. Run: python -m aviator_lab evaluate  (or simulate)")
+    st.write("No backtests yet. Run: python -m prediction_lab evaluate  (or simulate)")
 else:
     choice = st.selectbox("Run", runs.id, format_func=lambda i: (
         lambda r: f"#{i} {r.dataset} n={r.n_rounds} scored={r.n_scored} {r.created_at[:19]}")(

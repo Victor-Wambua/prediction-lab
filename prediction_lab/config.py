@@ -18,12 +18,12 @@ def _load_dotenv(path: Path) -> None:
 
 _load_dotenv(BASE_DIR / ".env")
 
-AVIATOR_URL = os.environ.get("AVIATOR_URL", "https://www.betika.com/en-ke/aviator")
-HISTORY_ITEM_SELECTOR = os.environ.get("AVIATOR_HISTORY_ITEM_SELECTOR", "").strip() or None
-DB_PATH = Path(os.environ.get("AVIATOR_DB_PATH", BASE_DIR / "data" / "aviator.db"))
+PREDICTION_LAB_URL = os.environ.get("PREDICTION_LAB_URL", "https://example.com/game")
+HISTORY_ITEM_SELECTOR = os.environ.get("PREDICTION_LAB_HISTORY_ITEM_SELECTOR", "").strip() or None
+DB_PATH = Path(os.environ.get("PREDICTION_LAB_DB_PATH", BASE_DIR / "data" / "prediction_lab.db"))
 if not DB_PATH.is_absolute():
     DB_PATH = BASE_DIR / DB_PATH
-POLL_SECONDS = float(os.environ.get("AVIATOR_POLL_SECONDS", "1.0"))
+POLL_SECONDS = float(os.environ.get("PREDICTION_LAB_POLL_SECONDS", "1.0"))
 REPORTS_DIR = BASE_DIR / "reports"
 
 # Collector tuning

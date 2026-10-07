@@ -3,7 +3,7 @@ import sqlite3
 import numpy as np
 import pytest
 
-from aviator_lab import database as db
+from prediction_lab import database as db
 
 
 def test_append_and_order(conn):

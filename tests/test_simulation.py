@@ -1,8 +1,8 @@
 import numpy as np
 
-from aviator_lab import stats
-from aviator_lab.classes import N_CLASSES, theoretical_probs, to_class
-from aviator_lab.simulation import generate_random_rounds, generate_signal_rounds, run_sanity_checks
+from prediction_lab import stats
+from prediction_lab.classes import N_CLASSES, theoretical_probs, to_class
+from prediction_lab.simulation import generate_random_rounds, generate_signal_rounds, run_sanity_checks
 
 
 def test_synthetic_distribution_matches_theory():

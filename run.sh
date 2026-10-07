@@ -3,4 +3,4 @@
 set -e
 cd "$(dirname "$0")"
 source .venv/bin/activate
-python -m aviator_lab collect "$@"
+python -m prediction_lab collect "$@"

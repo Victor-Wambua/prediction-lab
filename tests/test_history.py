@@ -1,6 +1,6 @@
-from aviator_lab import database as db
-from aviator_lab.collector import Collector
-from aviator_lab.history import align, parse_multiplier, parse_snapshot
+from prediction_lab import database as db
+from prediction_lab.collector import Collector
+from prediction_lab.history import align, parse_multiplier, parse_snapshot
 
 
 def test_parse_multiplier_strict():

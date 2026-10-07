@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
 
-from aviator_lab.features import build_features, features_for_next
-from aviator_lab.simulation import generate_random_rounds
+from prediction_lab.features import build_features, features_for_next
+from prediction_lab.simulation import generate_random_rounds
 
 
 def test_row_t_depends_only_on_past():

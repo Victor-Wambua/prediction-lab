@@ -1,4 +1,4 @@
-"""Command line: python -m aviator_lab <command>"""
+"""Command line: python -m prediction_lab <command>"""
 import argparse
 import asyncio
 import json
@@ -101,15 +101,15 @@ def cmd_dashboard(a):
 
 
 def main(argv=None):
-    p = argparse.ArgumentParser(prog="aviator_lab", description="Aviator Research Lab (observe-only)")
+    p = argparse.ArgumentParser(prog="prediction_lab", description="Prediction Lab (observe-only)")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     s = sub.add_parser("probe", help="find the history strip on the page")
-    s.add_argument("--url", default=config.AVIATOR_URL)
+    s.add_argument("--url", default=config.PREDICTION_LAB_URL)
     s.set_defaults(fn=cmd_probe)
 
     s = sub.add_parser("collect", help="observe rounds and log live predictions")
-    s.add_argument("--url", default=config.AVIATOR_URL)
+    s.add_argument("--url", default=config.PREDICTION_LAB_URL)
     s.add_argument("--selector", default=config.HISTORY_ITEM_SELECTOR)
     s.add_argument("--order", choices=["newest_first", "oldest_first"], default="newest_first")
     s.add_argument("--no-predict", action="store_true")
